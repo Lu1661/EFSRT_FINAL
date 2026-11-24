@@ -1,0 +1,38 @@
+{% extends 'personal.html' %}
+{% block titulo %}Usuarios · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Usuarios') %}<a class="btn btn-primary jump-action" href="{{ url_for('admin.usuarios') + '#form-usuario' if usuario else '#form-usuario' }}">+ Nuevo usuario</a>{% endcall %}
+<section class="surface">
+<form class="filters" action="{{ url_for('admin.usuarios') }}">
+{{ ui.campo('Buscar usuario','q',q,type='search',max=80) }}<button class="btn btn-light">Buscar</button>
+</form>
+{% if usuarios %}<table class="stack-table"><thead><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
+<tbody>{% for item in usuarios %}<tr>
+<td data-label="Nombre">{{ item.nombre }}</td><td data-label="Usuario">{{ item.usuario }}</td><td data-label="Rol">{{ item.rol }}</td>
+<td data-label="Estado">{{ ui.estado('normal','Activo') if item.activo else ui.estado('agotado','Inactivo') }}</td>
+<td class="actions-cell"><a href="{{ url_for('admin.usuarios', ident=item.id) }}#form-usuario">Editar</a></td>
+</tr>{% endfor %}</tbody></table>{% else %}{{ ui.vacio('No se encontraron usuarios.') }}{% endif %}
+</section>
+<section class="surface" id="form-usuario">
+<h2>{{ 'Editar usuario' if usuario else 'Nuevo usuario' }}</h2>{{ ui.error_form(error) }}
+<form method="post" class="form-grid">
+{{ ui.token() }}
+{{ ui.campo('Nombre','nombre',form.get('nombre',usuario.nombre if usuario else ''),required=true,max=80) }}
+{{ ui.campo('Usuario','usuario',form.get('usuario',usuario.usuario if usuario else ''),required=true,max=30,autocomplete='off') }}
+{% if not usuario %}{{ ui.campo('Contraseña','password',type='password',required=true,max=128,autocomplete='new-password') }}{% endif %}
+{{ ui.opciones('Rol','rol',roles,form.get('rol',usuario.rol if usuario else 'Vendedor')) }}
+<label class="check-field"><input class="form-check-input" type="checkbox" name="activo" value="1"
+{% if (form.get('activo') == '1' if form.get('accion') == 'guardar' else (usuario.activo if usuario else true)) %}checked{% endif %}> Usuario activo</label>
+<div class="form-actions"><button class="btn btn-primary" name="accion" value="guardar">Guardar usuario</button>
+{% if usuario %}<a class="btn btn-light" href="{{ url_for('admin.usuarios') }}">Cancelar</a>{% endif %}</div>
+</form>
+</section>
+{% if usuario %}
+<section class="surface"><h2>Restablecer contraseña</h2>
+<form method="post" class="filters">
+{{ ui.token() }}
+{{ ui.campo('Nueva contraseña','password',type='password',required=true,max=128,autocomplete='new-password') }}
+<button class="btn btn-primary" name="accion" value="clave">Restablecer</button>
+</form></section>
+{% endif %}
+{% endblock %}

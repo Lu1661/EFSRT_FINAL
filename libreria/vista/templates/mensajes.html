@@ -1,0 +1,3 @@
+{% for tipo, mensaje in get_flashed_messages(with_categories=true) %}
+<div class="message {{ tipo }}" role="{{ 'alert' if tipo in ('danger', 'warning') else 'status' }}">{{ mensaje }}</div>
+{% endfor %}

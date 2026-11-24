@@ -1,0 +1,28 @@
+{% extends 'personal.html' %}
+{% block titulo %}Clientes y mayoristas · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Clientes y mayoristas') %}<a class="btn btn-primary jump-action" href="#nuevo-cliente">+ Nuevo cliente</a>{% endcall %}
+<section class="surface">
+<form class="filters">
+{{ ui.campo('Nombre o teléfono','q',q,type='search',max=100) }}
+{{ ui.opciones('Tipo','tipo',tipos_cliente,tipo,extra='Todos') }}<button class="btn btn-light">Buscar</button>
+</form>
+{% if clientes %}
+<table class="stack-table cliente-lista"><thead><tr><th>Nombre</th><th>Tipo</th><th>Teléfono</th><th>Contacto</th></tr></thead><tbody>
+{% for item in clientes %}<tr>
+<td data-label="Nombre"><a class="row-link" href="{{ url_for('panel.cliente', ident=item.id) }}">{{ item.nombre }}</a></td>
+<td data-label="Tipo">{{ item.tipo }}</td><td data-label="Teléfono">{{ item.telefono or '—' }}</td>
+<td data-label="Contacto">{% if whatsapp(item.telefono) %}<a href="{{ whatsapp(item.telefono) }}" target="_blank" rel="noopener noreferrer">WhatsApp</a>{% else %}—{% endif %}</td>
+</tr>{% endfor %}</tbody></table>
+{% else %}{{ ui.vacio('No se encontraron clientes.') }}{% endif %}
+</section>
+<section class="surface" id="nuevo-cliente">
+<h2>Nuevo cliente</h2>{{ ui.error_form(error) }}
+<form method="post" class="form-grid">
+{{ ui.token() }}{{ ui.campo('Nombre','nombre',form.get('nombre',''),required=true,max=100) }}
+{{ ui.opciones('Tipo','tipo',tipos_cliente,form.get('tipo','Minorista')) }}
+{{ ui.campo('Teléfono / WhatsApp','telefono',form.get('telefono',''),type='tel',max=20) }}
+<div class="form-actions"><button class="btn btn-primary">Guardar cliente</button></div>
+</form>
+</section>
+{% endblock %}

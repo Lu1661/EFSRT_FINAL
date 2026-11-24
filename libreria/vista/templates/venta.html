@@ -1,0 +1,31 @@
+{% extends 'personal.html' %}
+{% block titulo %}Registrar venta · Librería Popular{% endblock %}
+{% block recursos %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<script defer src="{{ url_for('static', filename='venta.js') }}"></script>
+{% endblock %}
+{% block contenido %}
+{{ ui.encabezado('Registrar venta', 'Busca productos, elige la cantidad y confirma la venta.') }}
+<div class="sale-grid" data-venta data-token="{{ token }}" data-buscar="{{ url_for('panel.buscar_venta') }}" data-confirmar="{{ url_for('panel.confirmar_venta') }}">
+<section class="surface">
+<h2>Productos de la venta</h2>
+<form class="sale-search" data-buscador role="search">
+<label class="field"><span>Producto</span><input class="form-control" type="search" name="q" placeholder="Nombre o código" autocomplete="off" maxlength="120" aria-controls="resultados-venta"></label>
+{{ ui.opciones('Categoría', 'categoria', categorias, extra='Todas') }}
+<label class="field"><span>Cantidad</span><input class="form-control" type="number" name="cantidad" min="1" step="1" value="1" required></label>
+<button class="btn btn-primary" type="submit">Agregar</button>
+<div class="search-results" id="resultados-venta" data-resultados hidden></div>
+</form>
+<p class="message danger" role="alert" data-error hidden></p>
+<div data-lineas></div>
+</section>
+<aside class="surface sale-summary">
+<h2>Resumen de venta</h2>
+<div class="summary-meta"><span>Fecha</span><strong>Se asigna al confirmar</strong><span>Usuario</span><strong>{{ g.usuario.nombre }}</strong></div>
+<label class="field"><span>Cliente (opcional)</span><select class="form-select" data-cliente><option value="">Sin cliente</option>
+{% for cliente in clientes %}<option value="{{ cliente.id }}">{{ cliente.nombre }} ({{ cliente.tipo }})</option>{% endfor %}</select></label>
+<div class="sale-controls"><div class="sale-total"><span>Total</span><strong data-total aria-live="polite">S/ 0.00</strong></div>
+<button class="btn btn-primary w-100" data-confirmar-venta type="button" disabled>Confirmar venta</button>
+</aside>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'personal.html' %}
+{% block titulo %}Historial de ventas · Librería Popular{% endblock %}
+{% block contenido %}
+{{ ui.encabezado('Historial de ventas') }}
+<section class="surface">
+<form class="filters">
+{{ ui.campo('Desde', 'desde', desde, type='date') }}{{ ui.campo('Hasta', 'hasta', hasta, type='date') }}
+<label class="field"><span>Vendedor</span><select class="form-select" name="usuario"><option value="">Todos</option>
+{% for user in usuarios %}<option value="{{ user.id }}" {% if user.id == seleccionado %}selected{% endif %}>{{ user.nombre }}</option>{% endfor %}</select></label>
+<button class="btn btn-primary">Filtrar</button>
+</form>
+{{ ui.filas_ventas(ventas) }}
+{{ ui.paginacion(pagina, total, limite) }}
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'personal.html' %}
+{% block titulo %}Alertas y reposición · Librería Popular{% endblock %}
+{% block contenido %}
+{{ ui.encabezado('Alertas y reposición') }}
+<div class="stats-grid">
+<div class="stat"><span>Stock bajo</span><strong>{{ productos|length - agotados }}</strong></div>
+<div class="stat"><span>Agotados</span><strong>{{ agotados }}</strong></div>
+</div>
+<section class="surface"><h2>Productos para reponer</h2>
+{% if productos %}
+<table class="stack-table"><thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th>Stock</th><th>Mínimo</th><th>Proveedor</th><th>Estado</th></tr></thead>
+<tbody>{% for item in productos %}{% set clave, etiqueta = disponibilidad(item) %}<tr>
+<td data-label="Código" class="code">{{ item.codigo }}</td><td data-label="Producto">{{ item.nombre }}</td>
+<td data-label="Categoría">{{ item.categoria }}</td><td data-label="Stock">{{ item.stock }}</td>
+<td data-label="Mínimo">{{ item.stock_minimo }}</td><td data-label="Proveedor">{{ proveedores[item.id]|map(attribute='nombre')|join(', ') or 'Sin proveedor' }}</td>
+<td data-label="Estado">{{ ui.estado(clave,'Stock bajo' if clave == 'bajo' else etiqueta) }}</td>
+</tr>{% endfor %}</tbody></table>
+{% else %}{{ ui.vacio('No hay alertas de stock.') }}{% endif %}
+</section>
+{% if grupos %}
+<section class="surface">
+<div class="section-heading"><div><h2>Pedido sugerido por proveedor</h2><p>Completa hasta cuatro veces el mínimo de cada producto.</p></div>
+<a class="btn btn-light mobile-bottom-action" href="{{ url_for('admin.alertas', exportar=1) }}">Exportar pedido sugerido</a></div>
+<div class="cards-grid">
+{% for prov,items in grupos %}
+<article class="small-card"><h3>{{ prov.nombre if prov else 'Sin proveedor' }}</h3>
+{% if prov and prov.contacto %}<p class="muted">{{ prov.contacto }}</p>{% endif %}
+<ul class="simple-list">{% for prod,qty in items %}<li>{{ prod.nombre }} <strong>{{ qty }} u.</strong></li>{% endfor %}</ul>
+</article>{% endfor %}
+</div></section>
+{% endif %}
+{% endblock %}

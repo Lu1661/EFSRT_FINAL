@@ -1,0 +1,21 @@
+{% import 'ui.html' as ui with context %}
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Librería Popular{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='libreria.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='diseno.css') }}">
+<script defer src="{{ url_for('static', filename='vendor/sweetalert2.all.min.js') }}"></script>
+<script defer src="{{ url_for('static', filename='comun.js') }}"></script>
+{% block recursos %}{% endblock %}
+</head>
+<body class="{% block clase %}{% endblock %}">
+{% block cabecera %}{% endblock %}
+{% block estructura %}
+<main class="simple-main" id="contenido">
+{% include 'mensajes.html' %}
+{% block cuerpo %}{% endblock %}
+</main>
+{% endblock %}
+</body></html>

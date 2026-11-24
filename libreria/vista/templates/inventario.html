@@ -1,0 +1,47 @@
+{% extends 'personal.html' %}
+{% block titulo %}Inventario · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Inventario de productos') %}
+<div class="screen-actions">
+<a class="btn btn-light" href="{{ url_for('admin.importar') }}">Importar Excel / CSV</a>
+<a class="btn btn-primary jump-action" href="{{ url_for('admin.productos') + '#form-producto' if producto else '#form-producto' }}">+ Nuevo producto</a>
+</div>
+{% endcall %}
+<section class="surface">
+<form class="filters" action="{{ url_for('admin.productos') }}">
+{{ ui.campo('Nombre o código','q',q,type='search',max=120) }}{{ ui.opciones('Categoría','categoria',categorias,categoria,extra='Todas') }}
+<label class="field"><span>Estado</span><select class="form-select" name="estado"><option value="">Todos</option>
+{% for clave,nombre in [('normal','Disponible'),('bajo','Stock bajo'),('agotado','Agotado')] %}<option value="{{ clave }}" {% if clave == estado %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select></label>
+<button class="btn btn-light">Buscar</button>
+</form>
+{% if productos %}
+<table class="stack-table inventory-table"><thead><tr><th>Código</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Mínimo</th><th>Temporada</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for item in productos %}{% set clave, etiqueta = disponibilidad(item) %}
+<tr><td data-label="Código" class="code">{{ item.codigo }}</td><td data-label="Nombre"><strong>{{ item.nombre }}</strong></td>
+<td data-label="Categoría">{{ item.categoria }}</td><td data-label="Precio" class="money">{{ item.precio|soles }}</td>
+<td data-label="Stock">{{ item.stock }}</td><td data-label="Mínimo">{{ item.stock_minimo }}</td>
+<td data-label="Temporada">{{ 'Escolar' if item.temporada_escolar else '—' }}</td>
+<td data-label="Estado">{{ ui.estado(clave,'Stock bajo' if clave == 'bajo' else etiqueta) }}</td>
+<td class="actions-cell"><a href="{{ url_for('admin.productos', ident=item.id) }}#form-producto">Editar</a> <a href="{{ url_for('admin.ajuste', producto_id=item.id) }}">Ajustar stock</a></td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}{{ ui.vacio('No se encontraron productos.') }}{% endif %}
+{{ ui.paginacion(pagina,total,limite) }}
+</section>
+<section class="surface" id="form-producto">
+<h2>{{ 'Editar producto' if producto else 'Nuevo producto' }}</h2>
+{{ ui.error_form(error) }}
+<form method="post" class="form-grid">{{ ui.token() }}
+{{ ui.campo('Código','codigo',form.get('codigo',producto.codigo if producto else ''),required=true,max=20) }}
+{{ ui.campo('Nombre','nombre',form.get('nombre',producto.nombre if producto else ''),required=true,max=120) }}
+{{ ui.opciones('Categoría','categoria',categorias,form.get('categoria',producto.categoria if producto else ''),extra='Seleccionar',required=true) }}
+{{ ui.campo('Precio (S/)','precio',form.get('precio',producto.precio if producto else ''),type='number',required=true,step='0.01',min='0.01') }}
+{% if not producto %}{{ ui.campo('Stock','stock',form.get('stock',0),type='number',required=true,min='0') }}
+{% else %}<a class="inline-field" href="{{ url_for('admin.ajuste', producto_id=producto.id) }}">Ajustar stock actual ({{ producto.stock }})</a>{% endif %}
+{{ ui.campo('Stock mínimo','stock_minimo',form.get('stock_minimo',producto.stock_minimo if producto else 5),type='number',required=true,min='1') }}
+<label class="check-field"><input class="form-check-input" type="checkbox" name="temporada_escolar" value="1" {% if (form.get('temporada_escolar') == '1' if form else producto and producto.temporada_escolar) %}checked{% endif %}>Temporada escolar</label>
+<div class="form-actions"><button class="btn btn-primary">Guardar producto</button>
+{% if producto %}<a class="btn btn-light" href="{{ url_for('admin.productos') }}">Cancelar</a>{% endif %}</div>
+</form>
+</section>
+{% endblock %}

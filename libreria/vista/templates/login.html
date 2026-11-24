@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block titulo %}Iniciar sesión · Librería Popular{% endblock %}
+{% block clase %}login-page{% endblock %}
+{% block cabecera %}<header class="topbar"><a class="brand" href="{{ url_for('publico.catalogo') }}"><span class="brand-symbol" aria-hidden="true">LP</span>Librería Popular</a><a class="header-link" href="{{ url_for('publico.catalogo') }}">Ver catálogo</a></header>{% endblock %}
+{% block cuerpo %}
+<div class="login-layout">
+<div class="login-intro"><span class="overline">Librería Popular</span><h2>Ventas e<br>inventario.</h2><p>Accede a las operaciones de la tienda.</p><div class="book-spines" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div>
+<section class="surface login-card">
+<h1>Iniciar sesión</h1><p class="muted">Ingresa con tu cuenta del personal.</p>
+{{ ui.error_form(error) }}
+<form method="post" class="form-stack">
+{{ ui.token() }}
+{{ ui.campo('Usuario', 'usuario', request.form.get('usuario', ''), required=true, max=30, autocomplete='username') }}
+{{ ui.campo('Contraseña', 'password', type='password', required=true, max=128, autocomplete='current-password') }}
+<button class="btn btn-primary" type="submit">Ingresar <span aria-hidden="true">↗</span></button>
+</form>
+<a class="login-catalog" href="{{ url_for('publico.catalogo') }}">Volver al catálogo público</a>
+</section>
+</div>
+{% endblock %}

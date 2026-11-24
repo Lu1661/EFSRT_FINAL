@@ -1,0 +1,29 @@
+{% extends 'personal.html' %}
+{% block titulo %}Ajuste de stock · Librería Popular{% endblock %}
+{% block contenido %}
+{{ ui.encabezado('Ajuste de stock') }}
+<section class="surface">
+<h2>Registrar ajuste</h2>{{ ui.error_form(error) }}
+<form method="post" class="form-grid" data-ajuste>
+{{ ui.token() }}
+<label class="field"><span>Producto</span><select name="producto_id" class="form-select" required data-producto-ajuste>
+<option value="">Seleccionar</option>
+{% for item in productos %}<option value="{{ item.id }}" data-stock="{{ item.stock }}" {% if seleccionado == item.id %}selected{% endif %}>{{ item.codigo }} · {{ item.nombre }}</option>{% endfor %}
+</select></label>
+<label class="field"><span>Cantidad anterior</span><input class="form-control" data-stock-actual value="—" readonly></label>
+{{ ui.campo('Cantidad nueva','cantidad',form.get('cantidad',''),type='number',required=true,min='0') }}
+{{ ui.campo('Motivo','motivo',form.get('motivo',''),required=true,max=100) }}
+{{ ui.campo('Usuario','',g.usuario.nombre,readonly=true) }}{{ ui.campo('Fecha','','Se asigna al guardar',readonly=true) }}
+<div class="form-actions"><button class="btn btn-primary">Guardar ajuste</button><a class="btn btn-light" href="{{ url_for('admin.productos') }}">Cancelar</a></div>
+</form></section>
+<section class="surface">
+<h2>Ajustes registrados</h2>
+{% if movimientos %}<table class="stack-table"><thead><tr><th>Fecha</th><th>Producto</th><th>Usuario</th><th>Anterior</th><th>Nueva</th><th>Motivo</th></tr></thead>
+<tbody>{% for item in movimientos %}<tr>
+<td data-label="Fecha">{{ item.fecha.strftime('%d/%m/%Y %H:%M') }}</td><td data-label="Producto">{{ item.producto.nombre }}</td>
+<td data-label="Usuario">{{ item.usuario.nombre }}</td><td data-label="Anterior">{{ item.cantidad_anterior }}</td>
+<td data-label="Nueva">{{ item.cantidad_nueva }}</td><td data-label="Motivo">{{ item.motivo }}</td>
+</tr>{% endfor %}</tbody></table>{% else %}{{ ui.vacio('Todavía no hay ajustes registrados.') }}{% endif %}
+{{ ui.paginacion(pagina,total,limite) }}
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'personal.html' %}
+{% block titulo %}{{ cliente.nombre }} · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado(cliente.nombre, cliente.tipo) %}
+<a class="btn btn-light" href="{{ url_for('panel.clientes') }}">Volver a clientes</a>
+{% endcall %}
+<section class="surface compact-card"><div><span class="muted">Teléfono</span><strong>{{ cliente.telefono or '—' }}</strong></div>
+{% if enlace %}<a class="btn btn-light" href="{{ enlace }}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>{% endif %}</section>
+<section class="surface"><h2>Historial de compras</h2>{{ ui.filas_ventas(ventas) }}{{ ui.paginacion(pagina, total, limite) }}</section>
+{% endblock %}

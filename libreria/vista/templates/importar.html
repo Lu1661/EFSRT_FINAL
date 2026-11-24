@@ -1,0 +1,20 @@
+{% extends 'personal.html' %}
+{% block titulo %}Importar productos · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Importar productos') %}<a class="btn btn-light" href="{{ url_for('admin.productos') }}">Volver a inventario</a>{% endcall %}
+<section class="surface">
+<h2>Carga inicial</h2>
+<p>Usa la plantilla para preparar un Excel (.xlsx) o CSV.</p>
+<a class="btn btn-light" href="{{ url_for('admin.plantilla') }}">Descargar plantilla CSV</a>
+{{ ui.error_form(error) }}
+<form method="post" enctype="multipart/form-data" class="filters upload-form">
+{{ ui.token() }}<label class="field"><span>Archivo</span><input class="form-control" name="archivo" type="file" accept=".xlsx,.csv" required></label>
+<button class="btn btn-primary">Importar</button>
+</form>
+</section>
+{% if guardados is not none %}
+<section class="surface"><h2>Resultado de la importación</h2><p class="message success">{{ guardados }} productos registrados.</p>
+{% if errores %}<h3>Filas rechazadas</h3><ul>{% for fila,mensaje in errores %}<li>Fila {{ fila }}. {{ mensaje }}</li>{% endfor %}</ul>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

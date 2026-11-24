@@ -1,0 +1,12 @@
+credenciales/
+.venv/
+instance/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+.env.*
+*.log
+/ARRANQUE.TXT
+/deploy/
+/*.bundle

@@ -1,0 +1,40 @@
+{% macro token() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro campo(etiqueta, nombre, value='', type='text', required=false, max=0, step='', min='', autocomplete='', readonly=false) %}
+<label class="field"><span>{{ etiqueta }}</span>
+<input class="form-control" name="{{ nombre }}" type="{{ type }}" value="{{ value if value is not none else '' }}"
+{% if required %}required{% endif %}{% if max %}maxlength="{{ max }}"{% endif %}{% if step %}step="{{ step }}"{% endif %}
+{% if min != '' %}min="{{ min }}"{% endif %}{% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}{% if readonly %}readonly{% endif %}></label>
+{% endmacro %}
+{% macro opciones(etiqueta, nombre, values, seleccionado='', extra='', required=false) %}
+<label class="field"><span>{{ etiqueta }}</span><select class="form-select" name="{{ nombre }}"{% if required %} required{% endif %}>
+{% if extra %}<option value="">{{ extra }}</option>{% endif %}
+{% for value in values %}<option value="{{ value }}"{% if value == seleccionado %} selected{% endif %}>{{ value }}</option>{% endfor %}
+</select></label>
+{% endmacro %}
+{% macro encabezado(titulo, detalle='') %}
+<div class="page-heading"><div><h1>{{ titulo }}</h1>{% if detalle %}<p>{{ detalle }}</p>{% endif %}</div>{{ caller() if caller is defined else '' }}</div>
+{% endmacro %}
+{% macro vacio(mensaje) %}<p class="empty-state">{{ mensaje }}</p>{% endmacro %}
+{% macro error_form(mensaje) %}{% if mensaje %}<p class="message danger" role="alert">{{ mensaje }}</p>{% endif %}{% endmacro %}
+{% macro estado(clave, texto) %}<span class="status {{ clave }}">{{ texto }}</span>{% endmacro %}
+{% macro paginacion(pagina, total, limite) %}
+{% set paginas = (total + limite - 1) // limite %}
+{% if paginas > 1 or pagina > 1 %}
+<nav class="pager" aria-label="Páginas">
+{% if pagina > 1 %}<a class="btn btn-light" href="{{ pagina_url(pagina - 1) }}">Anterior</a>{% endif %}
+<span>Página {{ pagina }} de {{ paginas }}</span>
+{% if pagina < paginas %}<a class="btn btn-light" href="{{ pagina_url(pagina + 1) }}">Siguiente</a>{% endif %}
+</nav>
+{% endif %}
+{% endmacro %}
+{% macro filas_ventas(ventas) %}
+{% if ventas %}
+<table class="stack-table"><thead><tr><th>Número</th><th>Fecha</th><th>Vendedor</th><th>Cliente</th><th class="money">Total</th></tr></thead>
+<tbody>{% for item in ventas %}
+<tr><td data-label="Número"><a class="row-link" href="{{ url_for('panel.detalle_venta', ident=item.id) }}">#{{ item.id }}</a></td>
+<td data-label="Fecha">{{ item.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+<td data-label="Vendedor">{{ item.usuario.nombre }}</td><td data-label="Cliente">{{ item.cliente.nombre if item.cliente else 'Sin cliente' }}</td>
+<td data-label="Total" class="money">{{ item.total|soles }}</td></tr>
+{% endfor %}</tbody></table>
+{% else %}{{ vacio('No hay ventas para esta consulta.') }}{% endif %}
+{% endmacro %}

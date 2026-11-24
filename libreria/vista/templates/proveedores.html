@@ -1,0 +1,38 @@
+{% extends 'personal.html' %}
+{% block titulo %}Proveedores · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Proveedores') %}
+<a class="btn btn-primary jump-action" href="{{ url_for('admin.proveedores') + '#form-proveedor' if proveedor else '#form-proveedor' }}">+ Nuevo proveedor</a>
+{% endcall %}
+<section class="surface">
+<form class="filters" action="{{ url_for('admin.proveedores') }}">
+{{ ui.campo('Buscar proveedor','q',q,type='search',max=100) }}<button class="btn btn-light">Buscar</button>
+</form>
+{% if proveedores %}
+<div class="cards-grid">{% for item in proveedores %}
+<article class="small-card">
+<h3>{{ item.nombre }}</h3><p class="muted">{{ item.contacto or 'Sin contacto registrado' }}</p>
+<p>{{ item.productos|length }} productos</p>
+{% if item.productos %}<details><summary>Productos que suministra</summary>
+<ul>{% for prod in item.productos %}<li>{{ prod.nombre }}</li>{% endfor %}</ul></details>{% endif %}
+<a class="row-link" href="{{ url_for('admin.proveedores', ident=item.id) }}#form-proveedor">Editar</a>
+</article>{% endfor %}</div>
+{% else %}{{ ui.vacio('No se encontraron proveedores.') }}{% endif %}
+</section>
+<section class="surface" id="form-proveedor">
+<h2>{{ 'Editar proveedor' if proveedor else 'Nuevo proveedor' }}</h2>{{ ui.error_form(error) }}
+<form method="post" class="form-grid">{{ ui.token() }}
+{{ ui.campo('Nombre','nombre',form.get('nombre',proveedor.nombre if proveedor else ''),required=true,max=100) }}
+{{ ui.campo('Contacto','contacto',form.get('contacto',proveedor.contacto if proveedor else ''),max=100) }}
+<fieldset class="full-field"><legend>Productos que suministra</legend>
+{% if opciones %}
+<label class="field"><span>Buscar productos</span><input class="form-control" type="search" data-filtrar-opciones placeholder="Nombre o código"></label>
+<div class="checklist" data-opciones>{% for prod in opciones %}
+<label class="check-field" data-opcion><input class="form-check-input" type="checkbox" name="producto_id" value="{{ prod.id }}" {% if prod.id in seleccion %}checked{% endif %}>{{ prod.codigo }} · {{ prod.nombre }}</label>
+{% endfor %}</div>
+{% else %}<p class="muted">Registra productos en Inventario para asociarlos al proveedor.</p>{% endif %}
+</fieldset>
+<div class="form-actions"><button class="btn btn-primary">Guardar proveedor</button>
+{% if proveedor %}<a class="btn btn-light" href="{{ url_for('admin.proveedores') }}">Cancelar</a>{% endif %}</div>
+</form></section>
+{% endblock %}

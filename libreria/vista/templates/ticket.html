@@ -1,0 +1,24 @@
+{% extends 'personal.html' %}
+{% block titulo %}Venta #{{ venta.id }} · Librería Popular{% endblock %}
+{% block contenido %}
+{% call ui.encabezado('Resumen de venta' if resumen else 'Detalle de venta') %}
+<div class="screen-actions">
+<button class="btn btn-primary" type="button" data-imprimir>Imprimir resumen</button>
+{% if g.usuario.rol == 'Vendedor' %}<a class="btn btn-light" href="{{ url_for('panel.venta') }}">Nueva venta</a>{% endif %}
+<a class="btn btn-light" href="{{ url_for('panel.historial') }}">Historial</a>
+</div>
+{% endcall %}
+<article class="surface ticket">
+<h2>Librería Popular</h2>
+<p>Venta #{{ venta.id }}</p>
+<dl class="ticket-meta"><div><dt>Fecha</dt><dd>{{ venta.fecha.strftime('%d/%m/%Y %H:%M') }}</dd></div>
+<div><dt>Usuario</dt><dd>{{ venta.usuario.nombre }}</dd></div><div><dt>Cliente</dt><dd>{{ venta.cliente.nombre if venta.cliente else 'Sin cliente' }}</dd></div></dl>
+<table class="stack-table"><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th class="money">Subtotal</th></tr></thead>
+<tbody>{% for linea in venta.detalles %}
+<tr><td data-label="Producto">{{ linea.producto.nombre }}</td><td data-label="Cantidad">{{ linea.cantidad }}</td>
+<td data-label="Precio unitario">{{ linea.precio_unitario|soles }}</td><td data-label="Subtotal" class="money">{{ linea.subtotal|soles }}</td></tr>
+{% endfor %}</tbody></table>
+<div class="sale-total"><span>Total</span><strong>{{ venta.total|soles }}</strong></div>
+<p class="muted ticket-note">Resumen de venta sin validez tributaria.</p>
+</article>
+{% endblock %}

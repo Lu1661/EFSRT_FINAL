@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% set rol = g.usuario.rol %}
+{% macro menu_item(texto, endpoint) %}
+<a href="{{ url_for(endpoint) }}" class="menu-item{% if request.endpoint == endpoint %} current{% endif %}"
+{% if request.endpoint == endpoint %} aria-current="page"{% endif %}><span class="menu-icon" aria-hidden="true">{{ {
+ 'panel.venta': '⊕', 'panel.historial': '◷', 'admin.productos': '▤',
+ 'admin.ajuste': '⇄', 'admin.alertas': '◇', 'panel.clientes': '♙',
+ 'admin.proveedores': '▱', 'admin.usuarios': '♙', 'admin.reportes': '▥',
+ 'publico.catalogo': '▣' }.get(endpoint, '·') }}</span>{{ texto }}</a>
+{% endmacro %}
+{% block clase %}personal{% endblock %}
+{% block cabecera %}
+<header class="topbar">
+<a class="brand" href="{{ url_for('panel.inicio') }}"><span class="brand-symbol" aria-hidden="true">LP</span>Librería Popular</a>
+<div class="top-actions"><div class="staff-user"><span class="user-avatar" aria-hidden="true">{{ g.usuario.nombre[0]|upper }}</span><span class="user-identity">{{ g.usuario.nombre }}<small>{{ rol }}</small></span></div><span class="role">{{ rol }}</span><button type="button" class="menu-toggle" data-menu aria-controls="menu-personal" aria-expanded="false" aria-label="Menú del personal">☰</button></div>
+</header>
+{% endblock %}
+{% block estructura %}
+<div class="staff-shell">
+<aside class="sidebar" id="menu-personal">
+<nav aria-label="Menú del personal">
+<span class="menu-label">Ventas</span>
+{% if rol == 'Vendedor' %}{{ menu_item('Registrar venta', 'panel.venta') }}{% endif %}
+{{ menu_item('Historial de ventas', 'panel.historial') }}
+{% if rol == 'Administrador' %}
+<span class="menu-label">Inventario</span>
+{{ menu_item('Productos', 'admin.productos') }}{{ menu_item('Ajuste de stock', 'admin.ajuste') }}{{ menu_item('Alertas y reposición', 'admin.alertas') }}
+{% endif %}
+<span class="menu-label">Gestión</span>
+{{ menu_item('Clientes', 'panel.clientes') }}
+{% if rol == 'Administrador' %}
+{{ menu_item('Proveedores', 'admin.proveedores') }}
+<span class="menu-label">Administración</span>
+{{ menu_item('Usuarios', 'admin.usuarios') }}{{ menu_item('Reportes', 'admin.reportes') }}
+{% endif %}
+<span class="menu-label">Cliente</span>
+{{ menu_item('Catálogo público', 'publico.catalogo') }}
+</nav>
+<form class="logout" method="post" action="{{ url_for('panel.salir') }}">{{ ui.token() }}<button type="submit" class="btn btn-light">Cerrar sesión</button></form>
+</aside>
+<main class="staff-main" id="contenido">
+{% include 'mensajes.html' %}
+{% block contenido %}{% endblock %}
+</main>
+</div>
+<nav class="mobile-nav" aria-label="Accesos del personal">
+{% if rol == 'Vendedor' %}
+{{ menu_item('Ventas', 'panel.venta') }}{{ menu_item('Historial', 'panel.historial') }}{{ menu_item('Clientes', 'panel.clientes') }}
+{% else %}
+{{ menu_item('Inventario', 'admin.productos') }}{{ menu_item('Alertas', 'admin.alertas') }}{{ menu_item('Reportes', 'admin.reportes') }}
+<button type="button" data-menu aria-controls="menu-personal" aria-expanded="false">Más ☰</button>
+{% endif %}
+</nav>
+{% endblock %}

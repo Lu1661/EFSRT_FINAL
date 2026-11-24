@@ -1,0 +1,38 @@
+{% extends 'personal.html' %}
+{% block titulo %}Reportes · Librería Popular{% endblock %}
+{% block recursos %}
+<script defer src="{{ url_for('static', filename='vendor/chart.umd.min.js') }}"></script>
+<script defer src="{{ url_for('static', filename='reportes.js') }}"></script>
+{% endblock %}
+{% block contenido %}
+{{ ui.encabezado('Reportes de ventas') }}
+<section class="surface">
+<form class="filters report-filters">
+<fieldset class="periodos"><legend>Periodo</legend><div class="category-pills">
+{% for key,label in periodos.items() %}<label class="pill{% if periodo == key %} selected{% endif %}"><input type="radio" name="periodo" value="{{ key }}" {% if periodo == key %}checked{% endif %}>{{ label }}</label>{% endfor %}
+</div></fieldset>
+{{ ui.campo('Fecha de referencia','fecha',fecha,type='date',required=true) }}
+<button class="btn btn-primary">Generar reporte</button>
+{% if data %}<a class="btn btn-light mobile-bottom-action" href="{{ url_for('admin.reportes', periodo=periodo, fecha=fecha, exportar=1) }}">Exportar CSV</a>{% endif %}
+</form>
+{{ ui.error_form(error) }}
+{% if data %}<p class="muted periodo-fechas">{{ data.desde.strftime('%d/%m/%Y') }} al {{ data.hasta.strftime('%d/%m/%Y') }}</p>{% endif %}
+</section>
+{% if data and data.numero %}
+<div class="stats-grid">
+<div class="stat"><span>Total vendido</span><strong>{{ data.total|soles }}</strong></div>
+<div class="stat"><span>Número de ventas</span><strong>{{ data.numero }}</strong></div>
+<div class="stat"><span>Ticket promedio</span><strong>{{ data.promedio|soles }}</strong></div>
+</div>
+<section class="surface"><h2>Ventas por día</h2><div class="chart"><canvas id="ventas-chart" role="img" aria-label="Monto de ventas por día"></canvas></div>
+<script type="application/json" id="ventas-datos">{{ grafico|tojson }}</script>
+<details class="chart-details"><summary>Ver valores diarios</summary><ul class="simple-list">
+{% for dia,numero,total in data.dias %}<li>{{ dia }} · {{ numero }} ventas <strong>{{ total|soles }}</strong></li>{% endfor %}</ul></details>
+</section>
+<section class="surface"><h2>Productos más vendidos</h2>
+<table class="stack-table"><thead><tr><th>Producto</th><th>Categoría</th><th>Unidades</th><th class="money">Total vendido</th></tr></thead><tbody>
+{% for nombre,categoria,unidades,total in data.productos %}<tr>
+<td data-label="Producto">{{ nombre }}</td><td data-label="Categoría">{{ categoria }}</td><td data-label="Unidades">{{ unidades }}</td>
+<td data-label="Total vendido" class="money">{{ total|soles }}</td></tr>{% endfor %}</tbody></table>
+</section>{% elif data %}<section class="surface">{{ ui.vacio('No hay ventas en el periodo seleccionado.') }}</section>{% endif %}
+{% endblock %}

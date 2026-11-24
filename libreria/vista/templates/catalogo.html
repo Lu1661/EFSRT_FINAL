@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block titulo %}Catálogo · Librería Popular{% endblock %}
+{% block clase %}catalog-page{% endblock %}
+{% block cabecera %}<header class="topbar public-top"><a class="brand" href="{{ url_for('publico.catalogo') }}"><span class="brand-symbol" aria-hidden="true">LP</span>Librería Popular</a><a class="header-link" href="{{ url_for('panel.login') }}">Acceso del personal</a></header>{% endblock %}
+{% block recursos %}<script defer src="{{ url_for('static', filename='catalogo.js') }}"></script>{% endblock %}
+{% block cuerpo %}
+<div class="catalog-shell" data-catalogo data-api="{{ url_for('publico.buscar') }}" data-limite="{{ limite }}">
+<div class="page-heading"><div><h1>Catálogo de productos</h1><p>Libros y útiles de escritorio</p></div>
+{% if contacto %}<a class="btn btn-light" href="{{ contacto }}" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>{% endif %}
+</div>
+<form class="filters catalog-filters" role="search">
+<label class="field"><span>Buscar productos</span><input type="search" class="form-control" name="q" maxlength="120" placeholder="Nombre o código" value="{{ q }}"></label>
+<div class="category-pills" aria-label="Categorías">
+{% for opcion in ('',) + categorias %}
+<button class="pill{% if opcion == categoria %} selected{% endif %}" type="button" data-categoria="{{ opcion }}" aria-pressed="{{ 'true' if opcion == categoria else 'false' }}">{{ opcion or 'Todos' }}</button>
+{% endfor %}
+</div>
+</form>
+<p class="results-caption" data-resultados role="status">Cargando catálogo…</p>
+<div class="catalog-grid" data-productos></div>
+<div class="pager" data-paginas hidden>
+<button class="btn btn-light" type="button" data-anterior>Anterior</button><span data-pagina></span><button class="btn btn-light" type="button" data-siguiente>Siguiente</button>
+</div>
+<noscript><p class="message warning">Activa JavaScript para consultar la disponibilidad del catálogo.</p></noscript>
+</div>
+{% endblock %}
