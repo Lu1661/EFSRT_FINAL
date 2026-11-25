@@ -219,30 +219,30 @@ h2 { font-size: 1.18rem; }
   z-index: 10;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 14px 20px;
-  border: 1px solid #138c49;
-  border-radius: 999px;
-  background: #147c43;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #25d366;
   color: #fff;
   box-shadow: 0 6px 20px #114c342d;
   text-decoration: none;
-  font-size: .9rem;
-  font-weight: 650;
 }
+.catalog-whatsapp .whatsapp-icon { display: block; flex: none; }
 .catalog-whatsapp:hover, .catalog-whatsapp:focus-visible {
   color: #fff;
-  background: #106a38;
+  background: #20bf5b;
 }
 .catalog-whatsapp:focus-visible { outline-color: #147c43; }
 @media (max-width: 690px) {
   .catalog-whatsapp {
     right: max(17px, env(safe-area-inset-right));
     bottom: calc(17px + env(safe-area-inset-bottom));
-    min-height: 48px;
-    padding: 12px 17px;
-    font-size: .84rem;
+    width: 58px;
+    height: 58px;
   }
+  .catalog-whatsapp .whatsapp-icon { width: 32px; height: 32px; }
 }
 @media print { .catalog-whatsapp { display: none; } }
