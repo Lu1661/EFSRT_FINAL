@@ -21,8 +21,8 @@ Desde PowerShell, dentro de la carpeta del proyecto, ejecuta:
 
 El script prepara el entorno y verifica el esquema. Si todavía no hay usuarios, crea cuentas de demostración con contraseñas aleatorias y las guarda en instance/acceso_demo.txt. Si el inventario está vacío, carga productos de ejemplo.
 
-- Catálogo local en http://127.0.0.1:5060/Catalogo
-- Ingreso local en http://127.0.0.1:5060/login
+- Catálogo local en http://127.0.0.1:5062/Catalogo
+- Ingreso local en http://127.0.0.1:5062/login
 - Administrador en /administrador y Vendedor en /vendedor tras iniciar sesión.
 
 También se puede iniciar desde el entorno instalado:

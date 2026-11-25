@@ -17,7 +17,7 @@ Referencia: informe de Fase 1 y Fase 2 de Librería Popular, Tablas 7, 8, 12–2
 | CU09 Gestionar proveedores | RF09 registra y edita proveedores con nombre, contacto y productos que suministran. | `/administrador/proveedores`. Figura 28/33. Tablas `proveedor`, `proveedor_producto`, `producto`. |
 | CU10 Generar reportes | RF16 muestra productos más vendidos, RF17 resume ventas por periodo. La ficha del CU especifica día, semana, mes y campaña escolar, con gráfico y exportación. | `/administrador/reportes`. Figura 29/33. Tablas `venta`, `detalle_venta`, `producto`. |
 | CU11 Gestionar clientes | RF11 registra nombre, tipo y teléfono, RF22 lista mayoristas con historial de compras y RF23 abre WhatsApp desde la ficha. | `/clientes` y ficha del cliente. Figura 30/33. Tablas `cliente` y `venta`. |
-| CU12 Consultar catálogo | RF12 publica precio y disponibilidad, RF13 vuelve a leer el stock, RF14 permite búsqueda y filtro sin sesión y RF15 facilita consultar por cuenta propia. | `/Catalogo` y API de catálogo. Figuras 31/33. Tabla `producto`. La consulta por WhatsApp requiere el número configurado de la tienda. La reducción de llamadas requiere observación con la librería. |
+| CU12 Consultar catálogo | RF12 publica precio y disponibilidad, RF13 vuelve a leer el stock, RF14 permite búsqueda y filtro sin sesión y RF15 facilita consultar por cuenta propia. | `/Catalogo` y API de catálogo. Figuras 31/33. Tabla `producto`. El botón flotante de WhatsApp abre una consulta con mensaje predeterminado; el cliente escribe manualmente el producto. La reducción de llamadas requiere observación con la librería. |
 
 ## Requisitos no funcionales
 

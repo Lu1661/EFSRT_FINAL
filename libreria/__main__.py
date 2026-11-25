@@ -18,7 +18,7 @@ def main():
     comandos.add_parser("respaldo", help="Guardar el respaldo local del día")
     servidor = comandos.add_parser("servir", help="Abrir la aplicación local")
     servidor.add_argument("--host", default="127.0.0.1")
-    servidor.add_argument("--puerto", type=int, default=5060)
+    servidor.add_argument("--puerto", type=int, default=5062)
     servidor.add_argument("--https", action="store_true", help="Usar un certificado temporal para una prueba local")
     servidor.add_argument("--certificado")
     servidor.add_argument("--llave")

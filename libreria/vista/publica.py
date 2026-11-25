@@ -17,9 +17,9 @@ def inicio():
 @publico.get("/Catalogo")
 def catalogo():
     q, categoria = filtros_productos()
-    telefono = os.environ.get("LIBRERIA_WHATSAPP", "")
+    telefono = os.environ.get("LIBRERIA_WHATSAPP") or "51975927108"
     return render_template("catalogo.html", q=q, categoria=categoria, limite=LIMITE,
-                           contacto=whatsapp(telefono, "Hola, quisiera consultar por un producto de Librería Popular."))
+                           contacto=whatsapp(telefono, "Hola, quisiera consultar por un producto de Librería Popular. El producto es:"))
 
 
 @publico.get("/api/catalogo/productos")

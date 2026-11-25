@@ -6,7 +6,7 @@
 {% block cuerpo %}
 <div class="catalog-shell" data-catalogo data-api="{{ url_for('publico.buscar') }}" data-limite="{{ limite }}">
 <div class="page-heading"><div><h1>Catálogo de productos</h1><p>Libros y útiles de escritorio</p></div>
-{% if contacto %}<a class="btn btn-light" href="{{ contacto }}" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>{% endif %}
+
 </div>
 <form class="filters catalog-filters" role="search">
 <label class="field"><span>Buscar productos</span><input type="search" class="form-control" name="q" maxlength="120" placeholder="Nombre o código" value="{{ q }}"></label>
@@ -23,4 +23,8 @@
 </div>
 <noscript><p class="message warning">Activa JavaScript para consultar la disponibilidad del catálogo.</p></noscript>
 </div>
+{% if contacto %}
+<a class="catalog-whatsapp" href="{{ contacto }}" target="_blank" rel="noopener noreferrer"
+   aria-label="Consultar por WhatsApp" title="Consultar por WhatsApp">WhatsApp <span aria-hidden="true">↗</span></a>
+{% endif %}
 {% endblock %}
